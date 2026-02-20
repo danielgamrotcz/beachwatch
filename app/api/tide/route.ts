@@ -1,18 +1,12 @@
-import { BEACHES } from "@/lib/beaches";
+import { NextResponse } from "next/server";
 import { getCachedTide } from "@/lib/redis";
 import { generateHarmonicTide } from "@/lib/tide-harmonic";
-import {
-  getBeachStatus,
-  getCurrentTidePoint,
-  getTideTrend,
-  getUpcomingEvents,
-} from "@/lib/tide-status";
+import { BEACHES } from "@/lib/beaches";
+import { getBeachStatus, getCurrentTidePoint, getTideTrend, getUpcomingEvents } from "@/lib/tide-status";
 import { BeachState } from "@/lib/types";
-import { Dashboard } from "./dashboard";
 
-export const revalidate = 300; // ISR: revalidate every 5 minutes
-
-export default async function Home() {
+export async function GET() {
+  // Try cached data first, fall back to harmonic model
   const tideData = (await getCachedTide()) ?? generateHarmonicTide();
   const now = new Date();
 
@@ -32,5 +26,9 @@ export default async function Home() {
     };
   });
 
-  return <Dashboard initialStates={states} />;
+  return NextResponse.json(states, {
+    headers: {
+      "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+    },
+  });
 }
