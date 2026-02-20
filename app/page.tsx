@@ -1,5 +1,5 @@
 import { BEACHES } from "@/lib/beaches";
-import { getCachedTide } from "@/lib/redis";
+import { getCachedTide } from "@/lib/kv";
 import { generateHarmonicTide } from "@/lib/tide-harmonic";
 import {
   getBeachStatus,

@@ -1,3 +1,4 @@
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { TIDE_REFERENCE_POINT } from "./beaches";
 import { TideData, TideExtreme, TidePoint } from "./types";
 
@@ -10,7 +11,12 @@ interface StormGlassExtremesResponse {
 }
 
 export async function fetchTideFromStormGlass(): Promise<TideData | null> {
-  const apiKey = process.env.STORMGLASS_API_KEY;
+  let apiKey: string | undefined;
+  try {
+    apiKey = getCloudflareContext().env.STORMGLASS_API_KEY;
+  } catch {
+    apiKey = process.env.STORMGLASS_API_KEY;
+  }
   if (!apiKey) return null;
 
   const { lat, lng } = TIDE_REFERENCE_POINT;

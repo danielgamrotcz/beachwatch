@@ -5,11 +5,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "build:cf": "npx opennextjs-cloudflare build",
+    "preview": "npm run build:cf && npx wrangler dev",
+    "deploy": "npm run build:cf && npx wrangler deploy",
     "lint": "eslint"
   },
   "dependencies": {
-    "@upstash/redis": "^1.36.2",
+    "@opennextjs/cloudflare": "^1.16.5",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3"

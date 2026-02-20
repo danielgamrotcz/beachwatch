@@ -1,0 +1,38 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "beachwatch",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-12-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "beachwatch"
+    }
+  ],
+
+  // Tide data cache
+  "kv_namespaces": [
+    {
+      "binding": "TIDE_CACHE",
+      "id": "<KV_NAMESPACE_ID>"
+    }
+  ],
+
+  // Cron trigger — calls the worker fetch handler
+  // Note: OpenNext maps scheduled events to fetch, but if not supported,
+  // use an external cron to hit /api/cron/refresh
+  "triggers": {
+    "crons": ["0 */6 * * *"]
+  },
+
+  "vars": {
+    "NEXT_PUBLIC_SITE_URL": "https://beachwatch.daniel-c41.workers.dev"
+  }
+}
