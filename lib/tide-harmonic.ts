@@ -1,18 +1,22 @@
 import { TideData, TideExtreme, TidePoint } from "./types";
 
-// Harmonic constituents calibrated for Gulf of Thailand (Hua Hin area)
-// M2 = principal lunar semidiurnal, S2 = principal solar semidiurnal
-// K1 = lunisolar diurnal, O1 = principal lunar diurnal
-// Accuracy: +/- 20-30 cm — sufficient for open/narrow/flooded status
+// Harmonic constituents from TICON-4 Ko Lak station (11.795°N, 99.817°E)
+// Nearest reference station to Hua Hin in the Gulf of Thailand
+// Amplitudes include nodal factor (f) for 2025-2027 mid-cycle
+// Phases = V0 + u - g (astronomical argument + nodal correction - phase lag)
+// calibrated via @neaps/tide-predictor at Feb 2026 reference, valid ~2025-2027
+// Recalibrate every ~5 years as nodal cycle is 18.6 years
 const CONSTITUENTS = [
-  { name: "M2", amplitude: 0.35, phase: 145, speed: 28.984104 },
-  { name: "S2", amplitude: 0.15, phase: 170, speed: 30.0 },
-  { name: "K1", amplitude: 0.45, phase: 30, speed: 15.041069 },
-  { name: "O1", amplitude: 0.3, phase: 350, speed: 13.943036 },
+  { name: "K1", amplitude: 0.5606, phase: 311.8, speed: 15.041069 },
+  { name: "O1", amplitude: 0.3982, phase: 131.6, speed: 13.943036 },
+  { name: "P1", amplitude: 0.1528, phase: 289.5, speed: 14.958931 },
+  { name: "Q1", amplitude: 0.0765, phase: 254.2, speed: 13.398661 },
+  { name: "M2", amplitude: 0.0599, phase: 231.0, speed: 28.984104 },
+  { name: "S2", amplitude: 0.0147, phase: 15.7, speed: 30.0 },
 ] as const;
 
-// Mean sea level offset for the area (meters above chart datum)
-const MSL_OFFSET = 0.9;
+// Heights are relative to MSL (mean sea level = 0)
+const MSL_OFFSET = 0;
 
 function degreesToRadians(deg: number): number {
   return (deg * Math.PI) / 180;
