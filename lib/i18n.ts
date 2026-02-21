@@ -278,6 +278,15 @@ const T: Record<string, Partial<Record<Lang, string>>> = {
     fr: "le plus proche", es: "más cercana", it: "più vicina",
   },
 
+  // Map section
+  "section.map": {
+    en: "Map", cs: "Mapa", th: "\u0e41\u0e1c\u0e19\u0e17\u0e35\u0e48",
+    zh: "\u5730\u56fe", ja: "\u5730\u56f3", ko: "\uc9c0\ub3c4",
+    de: "Karte", sv: "Karta", nl: "Kaart",
+    ru: "\u041a\u0430\u0440\u0442\u0430", uk: "\u041a\u0430\u0440\u0442\u0430",
+    fr: "Carte", es: "Mapa", it: "Mappa",
+  },
+
   // Beaches section
   "section.beaches": {
     en: "Beaches", cs: "Pl\u00e1\u017ee", th: "\u0e0a\u0e32\u0e22\u0e2b\u0e32\u0e14",

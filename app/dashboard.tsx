@@ -8,6 +8,7 @@ import { StatCard } from "@/components/StatCard";
 import { TideChart } from "@/components/TideChart";
 import { BeachCard } from "@/components/BeachCard";
 import { BeachDetail } from "@/components/BeachDetail";
+import { BeachMapWrapper } from "@/components/BeachMapWrapper";
 
 interface DashboardProps {
   initialStates: BeachState[];
@@ -93,6 +94,15 @@ export function Dashboard({ initialStates }: DashboardProps) {
             </p>
           )}
           <TideChart data={first.tideData} beach={chartState?.beach} lang={lang} />
+        </div>
+
+        <div className="mt-6">
+          <BeachMapWrapper
+            states={states}
+            selectedId={selectedId}
+            onSelect={(id) => setSelectedId(selectedId === id ? null : id)}
+            lang={lang}
+          />
         </div>
 
         <h2 className="mt-8 mb-3 text-[17px] font-semibold" style={{ letterSpacing: "-0.02em", color: "var(--color-text)" }}>
