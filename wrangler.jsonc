@@ -25,13 +25,6 @@
     }
   ],
 
-  // Cron trigger — calls the worker fetch handler
-  // Note: OpenNext maps scheduled events to fetch, but if not supported,
-  // use an external cron to hit /api/cron/refresh
-  "triggers": {
-    "crons": ["0 */6 * * *"]
-  },
-
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://beachwatch.daniel-c41.workers.dev"
   }
