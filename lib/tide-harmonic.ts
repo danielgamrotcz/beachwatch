@@ -31,14 +31,13 @@ export function predictHeight(date: Date): number {
   return Math.round(height * 100) / 100;
 }
 
-export function generateHarmonicTide(date?: Date): TideData {
+export function generateHarmonicTide(date?: Date, days = 3): TideData {
   const base = date ?? new Date();
   const start = new Date(base);
   start.setHours(0, 0, 0, 0);
 
-  // Generate hourly points for 24 hours
   const points: TidePoint[] = [];
-  for (let h = 0; h <= 24; h++) {
+  for (let h = 0; h <= days * 24; h++) {
     const t = new Date(start);
     t.setHours(h, 0, 0, 0);
     points.push({
@@ -47,8 +46,7 @@ export function generateHarmonicTide(date?: Date): TideData {
     });
   }
 
-  // Find extremes (local maxima/minima)
-  const extremes = findExtremes(start);
+  const extremes = findExtremes(start, days);
 
   return {
     points,
@@ -58,14 +56,14 @@ export function generateHarmonicTide(date?: Date): TideData {
   };
 }
 
-function findExtremes(dayStart: Date): TideExtreme[] {
+function findExtremes(dayStart: Date, days = 3): TideExtreme[] {
   const extremes: TideExtreme[] = [];
   const step = 10; // 10-minute resolution for finding extremes
 
   let prevHeight = predictHeight(dayStart);
   let prevSlope = 0;
 
-  for (let m = step; m <= 24 * 60; m += step) {
+  for (let m = step; m <= days * 24 * 60; m += step) {
     const t = new Date(dayStart);
     t.setMinutes(m);
     const height = predictHeight(t);

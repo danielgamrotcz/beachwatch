@@ -212,22 +212,45 @@ const T: Record<string, Partial<Record<Lang, string>>> = {
     fr: "Fermer", es: "Cerrar", it: "Chiudi",
   },
 
+  // Day picker
+  "day.today": {
+    en: "Today", cs: "Dnes", th: "\u0e27\u0e31\u0e19\u0e19\u0e35\u0e49",
+    zh: "\u4eca\u5929", ja: "\u4eca\u65e5", ko: "\uc624\ub298",
+    de: "Heute", sv: "Idag", nl: "Vandaag",
+    ru: "\u0421\u0435\u0433\u043e\u0434\u043d\u044f", uk: "\u0421\u044c\u043e\u0433\u043e\u0434\u043d\u0456",
+    fr: "Aujourd'hui", es: "Hoy", it: "Oggi",
+  },
+  "day.tomorrow": {
+    en: "Tomorrow", cs: "Z\u00edtra", th: "\u0e1e\u0e23\u0e38\u0e48\u0e07\u0e19\u0e35\u0e49",
+    zh: "\u660e\u5929", ja: "\u660e\u65e5", ko: "\ub0b4\uc77c",
+    de: "Morgen", sv: "Imorgon", nl: "Morgen",
+    ru: "\u0417\u0430\u0432\u0442\u0440\u0430", uk: "\u0417\u0430\u0432\u0442\u0440\u0430",
+    fr: "Demain", es: "Ma\u00f1ana", it: "Domani",
+  },
+  "day.tomorrow.short": {
+    en: "Tmrw", cs: "Z\u00edtra", th: "\u0e1e\u0e23\u0e38\u0e48\u0e07\u0e19\u0e35\u0e49",
+    zh: "\u660e\u5929", ja: "\u660e\u65e5", ko: "\ub0b4\uc77c",
+    de: "Mrgn", sv: "Imrg", nl: "Mrgn",
+    ru: "\u0417\u0430\u0432\u0442\u0440\u0430", uk: "\u0417\u0430\u0432\u0442\u0440\u0430",
+    fr: "Dem.", es: "M\u00f1a", it: "Dom.",
+  },
+
   // Forecast
   "forecast.title": {
-    en: "Today's forecast", cs: "P\u0159edpov\u011b\u010f na dnes", th: "\u0e1e\u0e22\u0e32\u0e01\u0e23\u0e13\u0e4c\u0e27\u0e31\u0e19\u0e19\u0e35\u0e49",
-    zh: "\u4eca\u65e5\u9884\u62a5", ja: "\u4eca\u65e5\u306e\u4e88\u5831", ko: "\uc624\ub298\uc758 \uc608\ubcf4",
-    de: "Vorhersage heute", sv: "Dagens prognos", nl: "Verwachting vandaag",
-    ru: "\u041f\u0440\u043e\u0433\u043d\u043e\u0437 \u043d\u0430 \u0441\u0435\u0433\u043e\u0434\u043d\u044f", uk: "\u041f\u0440\u043e\u0433\u043d\u043e\u0437 \u043d\u0430 \u0441\u044c\u043e\u0433\u043e\u0434\u043d\u0456",
-    fr: "Pr\u00e9vision du jour", es: "Pron\u00f3stico de hoy", it: "Previsioni di oggi",
+    en: "Forecast", cs: "P\u0159edpov\u011b\u010f", th: "\u0e1e\u0e22\u0e32\u0e01\u0e23\u0e13\u0e4c",
+    zh: "\u9884\u62a5", ja: "\u4e88\u5831", ko: "\uc608\ubcf4",
+    de: "Vorhersage", sv: "Prognos", nl: "Verwachting",
+    ru: "\u041f\u0440\u043e\u0433\u043d\u043e\u0437", uk: "\u041f\u0440\u043e\u0433\u043d\u043e\u0437",
+    fr: "Pr\u00e9vision", es: "Pron\u00f3stico", it: "Previsioni",
   },
 
   // Chart
   "chart.title": {
-    en: "Tide chart \u2014 today", cs: "Pr\u016fb\u011bh p\u0159\u00edlivu \u2014 dnes", th: "\u0e01\u0e23\u0e32\u0e1f\u0e19\u0e49\u0e33\u0e02\u0e36\u0e49\u0e19\u0e19\u0e49\u0e33\u0e25\u0e07 \u2014 \u0e27\u0e31\u0e19\u0e19\u0e35\u0e49",
-    zh: "\u6f6e\u6c50\u56fe\u8868 \u2014 \u4eca\u65e5", ja: "\u6f6e\u6c50\u30c1\u30e3\u30fc\u30c8 \u2014 \u4eca\u65e5", ko: "\uc870\uc11d \ucc28\ud2b8 \u2014 \uc624\ub298",
-    de: "Gezeitendiagramm \u2014 heute", sv: "Tidvattendiagram \u2014 idag", nl: "Getijdendiagram \u2014 vandaag",
-    ru: "\u0413\u0440\u0430\u0444\u0438\u043a \u043f\u0440\u0438\u043b\u0438\u0432\u043e\u0432 \u2014 \u0441\u0435\u0433\u043e\u0434\u043d\u044f", uk: "\u0413\u0440\u0430\u0444\u0456\u043a \u043f\u0440\u0438\u043b\u0438\u0432\u0456\u0432 \u2014 \u0441\u044c\u043e\u0433\u043e\u0434\u043d\u0456",
-    fr: "Mar\u00e9e du jour", es: "Marea de hoy", it: "Grafico maree \u2014 oggi",
+    en: "Tide chart", cs: "Pr\u016fb\u011bh p\u0159\u00edlivu", th: "\u0e01\u0e23\u0e32\u0e1f\u0e19\u0e49\u0e33\u0e02\u0e36\u0e49\u0e19\u0e19\u0e49\u0e33\u0e25\u0e07",
+    zh: "\u6f6e\u6c50\u56fe\u8868", ja: "\u6f6e\u6c50\u30c1\u30e3\u30fc\u30c8", ko: "\uc870\uc11d \ucc28\ud2b8",
+    de: "Gezeitendiagramm", sv: "Tidvattendiagram", nl: "Getijdendiagram",
+    ru: "\u0413\u0440\u0430\u0444\u0438\u043a \u043f\u0440\u0438\u043b\u0438\u0432\u043e\u0432", uk: "\u0413\u0440\u0430\u0444\u0456\u043a \u043f\u0440\u0438\u043b\u0438\u0432\u0456\u0432",
+    fr: "Mar\u00e9gramme", es: "Marea", it: "Grafico maree",
   },
   "chart.subtitle": {
     en: "Gulf of Thailand", cs: "Siamsk\u00fd z\u00e1liv", th: "\u0e2d\u0e48\u0e32\u0e27\u0e44\u0e17\u0e22",

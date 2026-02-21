@@ -1,5 +1,29 @@
 import { Beach, BeachStatus, ForecastWindow, TideData, TideEvent, TidePoint, TideTrend } from "./types";
 
+export function filterTideDataForDay(data: TideData, dayOffset: number): TideData {
+  const now = new Date();
+  const dayStart = new Date(now);
+  dayStart.setUTCHours(0 - 7, 0, 0, 0); // midnight ICT in UTC
+  dayStart.setUTCDate(dayStart.getUTCDate() + dayOffset);
+  const dayEnd = new Date(dayStart);
+  dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
+
+  const startMs = dayStart.getTime();
+  const endMs = dayEnd.getTime();
+
+  return {
+    ...data,
+    points: data.points.filter((p) => {
+      const ms = new Date(p.time).getTime();
+      return ms >= startMs && ms <= endMs;
+    }),
+    extremes: data.extremes.filter((e) => {
+      const ms = new Date(e.time).getTime();
+      return ms >= startMs && ms < endMs;
+    }),
+  };
+}
+
 export function getBeachStatus(beach: Beach, height: number): BeachStatus {
   const { criticalHeight, narrowHeight, beachWidthMax } = beach.properties;
 
@@ -137,7 +161,7 @@ export function getUpcomingEvents(
   }
 
   events.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
-  return events.slice(0, 5);
+  return events.slice(0, 8);
 }
 
 export function getForecastWindows(data: TideData, beach: Beach): ForecastWindow[] {

@@ -4,6 +4,24 @@ import { useState } from "react";
 import { BeachState, ForecastWindow } from "@/lib/types";
 import { Lang, t } from "@/lib/i18n";
 import { getForecastWindows } from "@/lib/tide-status";
+
+function dayPrefix(iso: string, lang: Lang): string {
+  const d = new Date(iso);
+  const now = new Date();
+  // Compare ICT dates
+  const toICTDate = (date: Date) => {
+    const ict = new Date(date.getTime() + 7 * 3600000);
+    return ict.toISOString().slice(0, 10);
+  };
+  const eventDate = toICTDate(d);
+  const todayDate = toICTDate(now);
+  if (eventDate === todayDate) return "";
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  if (eventDate === toICTDate(tomorrow)) return t(lang, "day.tomorrow.short") + " ";
+  const weekday = d.toLocaleDateString(lang === "cs" ? "cs-CZ" : lang === "th" ? "th-TH" : "en-US", { weekday: "short" });
+  return weekday + " ";
+}
 import { StatusBadge } from "./StatusBadge";
 import { TideChart } from "./TideChart";
 
@@ -97,12 +115,13 @@ export function BeachDetail({ state, lang, onClose }: BeachDetailProps) {
               const ictH = (time.getUTCHours() + 7) % 24;
               const hours = ictH.toString().padStart(2, "0");
               const mins = time.getUTCMinutes().toString().padStart(2, "0");
+              const prefix = dayPrefix(event.time, lang);
               const icon = event.type === "high" ? "\u2b06\ufe0f" : event.type === "low" ? "\u2b07\ufe0f" : "\ud83c\udf0a";
 
               return (
                 <div key={i} className="flex items-center gap-3 text-sm" style={{ color: "var(--color-text-secondary)" }}>
                   <span className="text-xs">{icon}</span>
-                  <span className="tabular-nums font-medium w-12">{hours}:{mins}</span>
+                  <span className="tabular-nums font-medium w-[72px]">{prefix}{hours}:{mins}</span>
                   <span>{t(lang, event.labelKey)}</span>
                   {event.height != null && <span className="tabular-nums ml-auto text-xs">{event.height}m</span>}
                 </div>
@@ -143,21 +162,21 @@ function ForecastRow({ window: w, lang }: { window: ForecastWindow; lang: Lang }
   const formatICT = (iso: string) => {
     const d = new Date(iso);
     const h = (d.getUTCHours() + 7) % 24;
-    return `${h.toString().padStart(2, "0")}:00`;
+    return `${dayPrefix(iso, lang)}${h.toString().padStart(2, "0")}:00`;
   };
-  const timeRange = `${formatICT(w.startTime)} – ${formatICT(w.endTime)}`;
+  const timeRange = `${formatICT(w.startTime)}\u2013${formatICT(w.endTime)}`;
   const color = STATUS_COLORS[w.status];
   const label = t(lang, `status.${w.status}`);
   const widthLabel = w.status === "flooded"
-    ? "—"
+    ? "\u2014"
     : w.minWidth === w.maxWidth
       ? `${w.minWidth}m`
-      : `${w.minWidth}–${w.maxWidth}m`;
+      : `${w.minWidth}\u2013${w.maxWidth}m`;
 
   return (
     <div className="flex items-center gap-2 text-sm" style={{ color }}>
       <span className="w-2 h-2 rounded-full shrink-0" style={{ background: color }} />
-      <span className="tabular-nums font-medium w-[110px]">{timeRange}</span>
+      <span className="tabular-nums font-medium w-[140px]">{timeRange}</span>
       <span className="font-semibold">{label}</span>
       <span className="tabular-nums ml-auto text-xs">{widthLabel}</span>
     </div>

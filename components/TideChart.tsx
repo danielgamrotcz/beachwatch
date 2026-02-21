@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { TideData, Beach } from "@/lib/types";
 import { Lang, t } from "@/lib/i18n";
-import { getBeachStatus } from "@/lib/tide-status";
+import { getBeachStatus, filterTideDataForDay } from "@/lib/tide-status";
 
 interface TideChartProps {
   data: TideData;
@@ -15,14 +16,27 @@ const CHART_W = 600;
 const BASE_H = 200;
 const BAR_H = 30;
 
+function getDayLabel(dayOffset: number, lang: Lang): string {
+  if (dayOffset === 0) return t(lang, "day.today");
+  if (dayOffset === 1) return t(lang, "day.tomorrow");
+  const d = new Date();
+  d.setDate(d.getDate() + dayOffset);
+  const weekday = d.toLocaleDateString(lang === "cs" ? "cs-CZ" : lang === "th" ? "th-TH" : "en-US", { weekday: "short" });
+  const day = d.getDate();
+  return `${weekday} ${day}`;
+}
+
 export function TideChart({ data, beach, lang, compact }: TideChartProps) {
+  const [selectedDay, setSelectedDay] = useState(0);
+
+  const dayData = filterTideDataForDay(data, selectedDay);
   const chartH = beach ? BASE_H + BAR_H : BASE_H;
   const padBottom = beach ? 62 : 32;
   const PAD = { top: 24, right: 16, bottom: padBottom, left: 40 };
   const w = CHART_W - PAD.left - PAD.right;
   const h = chartH - PAD.top - PAD.bottom;
 
-  const points = data.points;
+  const points = dayData.points;
   if (points.length < 2) return null;
 
   const heights = points.map((p) => p.height);
@@ -52,10 +66,11 @@ export function TideChart({ data, beach, lang, compact }: TideChartProps) {
   const firstPt = new Date(points[0].time).getTime();
   const fillD = `${pathD} L${xScale(lastPt)},${PAD.top + h} L${xScale(firstPt)},${PAD.top + h} Z`;
 
-  // Current time marker
+  // Current time marker — only for "Today"
   const now = new Date();
   const nowMs = now.getTime();
-  const nowInRange = nowMs >= startTime && nowMs <= endTime;
+  const showNow = selectedDay === 0;
+  const nowInRange = showNow && nowMs >= startTime && nowMs <= endTime;
   const nowX = nowInRange ? xScale(nowMs) : null;
 
   let nowY: number | null = null;
@@ -72,7 +87,7 @@ export function TideChart({ data, beach, lang, compact }: TideChartProps) {
     }
   }
 
-  // Time labels every 2h in ICT (span two days for data crossing midnight)
+  // Time labels every 4h in ICT
   const timeLabels: { x: number; label: string }[] = [];
   const dayStart = new Date(points[0].time);
   dayStart.setUTCHours(0 - 7, 0, 0, 0); // midnight ICT in UTC
@@ -110,6 +125,25 @@ export function TideChart({ data, beach, lang, compact }: TideChartProps) {
 
   const gradientId = compact ? "tideGradientCompact" : "tideGradient";
 
+  const dayPills = (
+    <div className="flex gap-1.5 mb-2">
+      {[0, 1, 2].map((day) => (
+        <button
+          key={day}
+          onClick={() => setSelectedDay(day)}
+          className="px-3 py-1 rounded-full text-xs font-medium transition-colors"
+          style={{
+            background: selectedDay === day ? "var(--color-accent)" : "transparent",
+            color: selectedDay === day ? "#fff" : "var(--color-text-secondary)",
+            border: selectedDay === day ? "none" : "1px solid var(--color-border)",
+          }}
+        >
+          {getDayLabel(day, lang)}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
     <div
       className={compact ? "" : "rounded-2xl p-5"}
@@ -133,6 +167,7 @@ export function TideChart({ data, beach, lang, compact }: TideChartProps) {
           </p>
         </div>
       )}
+      {dayPills}
       <svg viewBox={`0 0 ${CHART_W} ${chartH}`} className="w-full" style={{ overflow: "visible" }}>
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
@@ -150,7 +185,7 @@ export function TideChart({ data, beach, lang, compact }: TideChartProps) {
 
         <path d={pathD} fill="none" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 
-        {data.extremes.map((ext, i) => {
+        {dayData.extremes.map((ext, i) => {
           const extMs = new Date(ext.time).getTime();
           const ex = xScale(extMs);
           const ey = yScale(ext.height);

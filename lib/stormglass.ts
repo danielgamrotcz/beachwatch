@@ -24,7 +24,7 @@ export async function fetchTideFromStormGlass(): Promise<TideData | null> {
   const start = new Date(now);
   start.setHours(0, 0, 0, 0);
   const end = new Date(start);
-  end.setDate(end.getDate() + 1);
+  end.setDate(end.getDate() + 3);
   end.setHours(23, 59, 59, 999);
 
   const startISO = start.toISOString();
