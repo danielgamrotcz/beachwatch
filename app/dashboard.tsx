@@ -13,10 +13,36 @@ interface DashboardProps {
   initialStates: BeachState[];
 }
 
+function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 export function Dashboard({ initialStates }: DashboardProps) {
   const [states, setStates] = useState(initialStates);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [nearestId, setNearestId] = useState<string | null>(initialStates[0]?.beach.id ?? null);
   const [lang, setLang] = useLang();
+
+  useEffect(() => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        let closest = initialStates[0]?.beach.id ?? null;
+        let minDist = Infinity;
+        for (const s of initialStates) {
+          const d = haversine(latitude, longitude, s.beach.coordinates.lat, s.beach.coordinates.lng);
+          if (d < minDist) { minDist = d; closest = s.beach.id; }
+        }
+        setNearestId(closest);
+      },
+    );
+  }, [initialStates]);
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -32,6 +58,8 @@ export function Dashboard({ initialStates }: DashboardProps) {
   }, []);
 
   const selected = states.find((s) => s.beach.id === selectedId) ?? null;
+  const chartBeachId = selectedId ?? nearestId;
+  const chartState = states.find((s) => s.beach.id === chartBeachId) ?? null;
   const first = states[0];
   const walkableCount = states.filter((s) => s.status.walkable).length;
   const trendLabel = t(lang, `trend.${first.trend}`);
@@ -48,7 +76,7 @@ export function Dashboard({ initialStates }: DashboardProps) {
       <Header lang={lang} onLangChange={setLang} />
 
       <main className="mx-auto max-w-5xl px-6 py-6">
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 md:gap-3 md:grid-cols-4">
           <StatCard label={t(lang, "stat.level")} value={`${first.currentHeight}m`} />
           <StatCard label={t(lang, "stat.trend")} value={trendLabel} />
           <StatCard label={t(lang, "stat.walkable")} value={`${walkableCount}/${states.length}`} color="var(--color-open)" />
@@ -56,7 +84,15 @@ export function Dashboard({ initialStates }: DashboardProps) {
         </div>
 
         <div className="mt-6">
-          <TideChart data={first.tideData} beach={selected?.beach} lang={lang} />
+          {chartState && (
+            <p className="mb-2 flex items-center gap-1.5 text-sm" style={{ color: "var(--color-text-secondary)" }}>
+              📍 {chartState.beach.name}
+              {!selectedId && nearestId && (
+                <span className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>({t(lang, "gps.nearest")})</span>
+              )}
+            </p>
+          )}
+          <TideChart data={first.tideData} beach={chartState?.beach} lang={lang} />
         </div>
 
         <h2 className="mt-8 mb-3 text-[17px] font-semibold" style={{ letterSpacing: "-0.02em", color: "var(--color-text)" }}>
@@ -76,12 +112,32 @@ export function Dashboard({ initialStates }: DashboardProps) {
             ))}
           </div>
 
+          {/* Desktop: scrollable sticky sidebar */}
           {selected && (
-            <div className="md:sticky md:top-20 md:w-96 md:shrink-0">
+            <div className="hidden md:block md:sticky md:top-20 md:w-96 md:shrink-0 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:rounded-2xl">
               <BeachDetail state={selected} lang={lang} onClose={handleClose} />
             </div>
           )}
         </div>
+
+        {/* Mobile: bottom sheet overlay */}
+        {selected && (
+          <div className="fixed inset-0 z-50 md:hidden" onClick={handleClose}>
+            <div className="absolute inset-0 bg-black/40" />
+            <div
+              className="absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto rounded-t-2xl bottom-sheet-scroll pb-[env(safe-area-inset-bottom)]"
+              style={{ background: "var(--color-bg)" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 z-10 flex justify-center py-2" style={{ background: "var(--color-bg)" }}>
+                <div className="h-1 w-10 rounded-full" style={{ background: "var(--color-text-tertiary)" }} />
+              </div>
+              <div className="px-4 pb-4">
+                <BeachDetail state={selected} lang={lang} onClose={handleClose} />
+              </div>
+            </div>
+          </div>
+        )}
 
         <footer className="mt-8 mb-4 rounded-2xl p-4 text-center" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
           <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>{sourceLabel}</p>

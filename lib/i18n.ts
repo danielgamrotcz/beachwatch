@@ -269,6 +269,15 @@ const T: Record<string, Partial<Record<Lang, string>>> = {
     fr: "Source : Storm Glass API", es: "Fuente: Storm Glass API", it: "Fonte: Storm Glass API",
   },
 
+  // GPS
+  "gps.nearest": {
+    en: "nearest", cs: "nejbližší", th: "ใกล้ที่สุด",
+    zh: "最近", ja: "最寄り", ko: "가장 가까운",
+    de: "nächster", sv: "närmaste", nl: "dichtstbijzijnde",
+    ru: "ближайший", uk: "найближчий",
+    fr: "le plus proche", es: "más cercana", it: "più vicina",
+  },
+
   // Beaches section
   "section.beaches": {
     en: "Beaches", cs: "Pl\u00e1\u017ee", th: "\u0e0a\u0e32\u0e22\u0e2b\u0e32\u0e14",
