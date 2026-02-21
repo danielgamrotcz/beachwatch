@@ -22,7 +22,7 @@ export function BeachDetailPage({ state }: BeachDetailPageProps) {
           className="mb-4 inline-flex items-center gap-1 text-sm transition-colors"
           style={{ color: "var(--color-accent)" }}
         >
-          <span>\u2190</span>
+          <span>{"\u2190"}</span>
           <span>{t(lang, "section.beaches")}</span>
         </Link>
         <BeachDetail

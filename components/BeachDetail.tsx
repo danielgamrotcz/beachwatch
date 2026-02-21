@@ -107,7 +107,7 @@ export function BeachDetail({ state, lang, onClose }: BeachDetailProps) {
         className="flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium transition-colors"
         style={{ background: "var(--color-accent-light)", color: "var(--color-accent)" }}
       >
-        {t(lang, "detail.openMaps")} \u2197
+        {t(lang, "detail.openMaps")} {"\u2197"}
       </a>
 
       <p className="text-[11px]" style={{ color: "var(--color-text-tertiary)" }}>{t(lang, "footer.disclaimer")}</p>

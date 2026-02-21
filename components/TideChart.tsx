@@ -14,13 +14,6 @@ const CHART_W = 600;
 const CHART_H = 200;
 const PAD = { top: 24, right: 16, bottom: 32, left: 40 };
 
-// ICT = UTC+7
-function toICTHour(date: Date): number {
-  const utcH = date.getUTCHours();
-  const utcM = date.getUTCMinutes();
-  return ((utcH + 7) % 24) + utcM / 60;
-}
-
 export function TideChart({ data, beach, lang, compact }: TideChartProps) {
   const w = CHART_W - PAD.left - PAD.right;
   const h = CHART_H - PAD.top - PAD.bottom;
@@ -145,14 +138,11 @@ export function TideChart({ data, beach, lang, compact }: TideChartProps) {
           const ex = xScale(extMs);
           const ey = yScale(ext.height);
           if (ex < PAD.left || ex > PAD.left + w) return null;
-          const ictH = toICTHour(new Date(ext.time));
-          const hh = Math.floor(ictH).toString().padStart(2, "0");
-          const mm = Math.round((ictH % 1) * 60).toString().padStart(2, "0");
           return (
             <g key={i}>
               <circle cx={ex} cy={ey} r="3.5" fill="var(--color-accent)" />
               <text x={ex} y={ey - 8} textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--color-text-secondary)">
-                {ext.height}m \u00b7 {hh}:{mm}
+                {ext.height}m
               </text>
             </g>
           );
