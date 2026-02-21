@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { BeachState, ForecastWindow } from "@/lib/types";
 import { Lang, t } from "@/lib/i18n";
 import { getForecastWindows } from "@/lib/tide-status";
@@ -15,6 +16,7 @@ interface BeachDetailProps {
 export function BeachDetail({ state, lang, onClose }: BeachDetailProps) {
   const { beach, status, currentHeight, events, tideData } = state;
   const forecast = getForecastWindows(tideData, beach);
+  const [chartExpanded, setChartExpanded] = useState(false);
 
   const statusIcon = status.status === "open" ? "\u2705" : status.status === "narrow" ? "\u26a0\ufe0f" : "\ud83d\udeab";
 
@@ -32,7 +34,7 @@ export function BeachDetail({ state, lang, onClose }: BeachDetailProps) {
             <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>{beach.nameTh}</p>
           </div>
         </div>
-        <button onClick={onClose} className="rounded-full p-2 transition-colors hover:bg-[var(--color-accent-light)]" aria-label={t(lang, "detail.close")}>
+        <button onClick={onClose} className="flex items-center justify-center rounded-full min-w-11 min-h-11 transition-colors hover:bg-[var(--color-accent-light)]" aria-label={t(lang, "detail.close")}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M4 4l8 8M12 4l-8 8" stroke="var(--color-text-secondary)" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
@@ -54,8 +56,24 @@ export function BeachDetail({ state, lang, onClose }: BeachDetailProps) {
         <QuickStat label={t(lang, "beach.width")} value={status.visibleWidth > 0 ? `${status.visibleWidth}m / ${beach.properties.beachWidthMax}m` : "\u2014"} />
       </div>
 
-      {/* Chart */}
-      <TideChart data={tideData} beach={beach} lang={lang} compact />
+      {/* Chart — tap to expand */}
+      <div className="relative cursor-pointer" onClick={() => setChartExpanded(true)}>
+        <TideChart data={tideData} beach={beach} lang={lang} compact />
+        <div className="absolute top-1 right-1 rounded-md p-1" style={{ background: "var(--color-surface)", opacity: 0.6 }}>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 5V1h4M9 1h4v4M13 9v4H9M5 13H1V9" stroke="var(--color-text-tertiary)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Chart fullscreen overlay */}
+      {chartExpanded && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center" style={{ background: "rgba(0,0,0,0.7)" }} onClick={() => setChartExpanded(false)}>
+          <div className="w-full max-w-3xl px-3" onClick={(e) => e.stopPropagation()}>
+            <TideChart data={tideData} beach={beach} lang={lang} />
+          </div>
+        </div>
+      )}
 
       {/* Forecast windows */}
       {forecast.length > 0 && (
@@ -122,8 +140,12 @@ function QuickStat({ label, value }: { label: string; value: string }) {
 const STATUS_COLORS: Record<string, string> = { open: "#34C759", narrow: "#FF9500", flooded: "#FF3B30" };
 
 function ForecastRow({ window: w, lang }: { window: ForecastWindow; lang: Lang }) {
-  const pad = (n: number) => n.toString().padStart(2, "0");
-  const timeRange = `${pad(w.startHour)}:00 – ${pad(w.endHour)}:00`;
+  const formatICT = (iso: string) => {
+    const d = new Date(iso);
+    const h = (d.getUTCHours() + 7) % 24;
+    return `${h.toString().padStart(2, "0")}:00`;
+  };
+  const timeRange = `${formatICT(w.startTime)} – ${formatICT(w.endTime)}`;
   const color = STATUS_COLORS[w.status];
   const label = t(lang, `status.${w.status}`);
   const widthLabel = w.status === "flooded"
@@ -133,10 +155,10 @@ function ForecastRow({ window: w, lang }: { window: ForecastWindow; lang: Lang }
       : `${w.minWidth}–${w.maxWidth}m`;
 
   return (
-    <div className="flex items-center gap-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>
+    <div className="flex items-center gap-2 text-sm" style={{ color }}>
       <span className="w-2 h-2 rounded-full shrink-0" style={{ background: color }} />
       <span className="tabular-nums font-medium w-[110px]">{timeRange}</span>
-      <span style={{ color }} className="font-semibold">{label}</span>
+      <span className="font-semibold">{label}</span>
       <span className="tabular-nums ml-auto text-xs">{widthLabel}</span>
     </div>
   );

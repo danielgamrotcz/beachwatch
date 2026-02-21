@@ -57,5 +57,14 @@ html, body {
   50% { transform: scale(1.6); opacity: 0; }
 }
 
+/* Smooth scroll + iOS rubber band */
+html { scroll-behavior: smooth; }
+
+/* Bottom sheet scroll */
+.bottom-sheet-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
 /* Tabular numbers for data */
 .tabular-nums { font-variant-numeric: tabular-nums; }

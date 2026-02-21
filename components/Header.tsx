@@ -12,7 +12,7 @@ interface HeaderProps {
 export function Header({ lang, onLangChange }: HeaderProps) {
   return (
     <header
-      className="sticky top-0 z-50 border-b px-6 py-3"
+      className="sticky top-0 z-50 border-b px-6 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]"
       style={{
         background: "color-mix(in srgb, var(--color-surface) 72%, transparent)",
         backdropFilter: "saturate(180%) blur(20px)",

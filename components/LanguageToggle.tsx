@@ -19,7 +19,7 @@ export function LanguageToggle({ lang, onChange }: LanguageToggleProps) {
           setLanguage(next);
           onChange(next);
         }}
-        className="appearance-none rounded-lg py-1 pl-2 pr-6 text-xs font-medium cursor-pointer"
+        className="appearance-none rounded-lg py-2 pl-2.5 pr-6 text-xs font-medium cursor-pointer min-h-11"
         style={{
           color: "var(--color-text-secondary)",
           background: "transparent",

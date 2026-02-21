@@ -141,37 +141,33 @@ export function getUpcomingEvents(
 }
 
 export function getForecastWindows(data: TideData, beach: Beach): ForecastWindow[] {
-  const entries = data.points.map((point) => {
-    const ictHour = (new Date(point.time).getUTCHours() + 7) % 24;
-    const s = getBeachStatus(beach, point.height);
-    return { hour: ictHour, status: s.status, width: s.visibleWidth };
-  });
-
-  if (entries.length === 0) return [];
+  const points = data.points;
+  if (points.length === 0) return [];
 
   const windows: ForecastWindow[] = [];
+  const firstStatus = getBeachStatus(beach, points[0].height);
   let cur = {
-    startHour: entries[0].hour,
-    endHour: (entries[0].hour + 1) % 24,
-    status: entries[0].status,
-    minWidth: entries[0].width,
-    maxWidth: entries[0].width,
+    startTime: points[0].time,
+    endTime: points[0].time,
+    status: firstStatus.status,
+    minWidth: firstStatus.visibleWidth,
+    maxWidth: firstStatus.visibleWidth,
   };
 
-  for (let i = 1; i < entries.length; i++) {
-    const e = entries[i];
-    if (e.status === cur.status) {
-      cur.endHour = (e.hour + 1) % 24;
-      cur.minWidth = Math.min(cur.minWidth, e.width);
-      cur.maxWidth = Math.max(cur.maxWidth, e.width);
+  for (let i = 1; i < points.length; i++) {
+    const s = getBeachStatus(beach, points[i].height);
+    if (s.status === cur.status) {
+      cur.endTime = points[i].time;
+      cur.minWidth = Math.min(cur.minWidth, s.visibleWidth);
+      cur.maxWidth = Math.max(cur.maxWidth, s.visibleWidth);
     } else {
       windows.push({ ...cur });
       cur = {
-        startHour: e.hour,
-        endHour: (e.hour + 1) % 24,
-        status: e.status,
-        minWidth: e.width,
-        maxWidth: e.width,
+        startTime: points[i].time,
+        endTime: points[i].time,
+        status: s.status,
+        minWidth: s.visibleWidth,
+        maxWidth: s.visibleWidth,
       };
     }
   }

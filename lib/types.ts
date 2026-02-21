@@ -56,8 +56,8 @@ export interface TideEvent {
 }
 
 export interface ForecastWindow {
-  startHour: number;
-  endHour: number;
+  startTime: string;
+  endTime: string;
   status: BeachStatusType;
   minWidth: number;
   maxWidth: number;
