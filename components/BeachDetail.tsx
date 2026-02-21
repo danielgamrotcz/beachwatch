@@ -28,10 +28,11 @@ import { TideChart } from "./TideChart";
 interface BeachDetailProps {
   state: BeachState;
   lang: Lang;
+  distance?: number;
   onClose: () => void;
 }
 
-export function BeachDetail({ state, lang, onClose }: BeachDetailProps) {
+export function BeachDetail({ state, lang, distance, onClose }: BeachDetailProps) {
   const { beach, status, currentHeight, events, tideData } = state;
   const forecast = getForecastWindows(tideData, beach);
   const [chartExpanded, setChartExpanded] = useState(false);
@@ -49,7 +50,12 @@ export function BeachDetail({ state, lang, onClose }: BeachDetailProps) {
           <span className="text-2xl">{beach.icon}</span>
           <div>
             <h2 className="text-lg font-bold" style={{ letterSpacing: "-0.02em", color: "var(--color-text)" }}>{beach.name}</h2>
-            <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>{beach.nameTh}</p>
+            <p className="text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+              {beach.nameTh}
+              {distance != null && (
+                <span className="ml-2 tabular-nums">{distance < 1 ? `${Math.round(distance * 1000)}m` : `${distance.toFixed(1)}km`}</span>
+              )}
+            </p>
           </div>
         </div>
         <button onClick={onClose} className="flex items-center justify-center rounded-full min-w-11 min-h-11 transition-colors hover:bg-[var(--color-accent-light)]" aria-label={t(lang, "detail.close")}>

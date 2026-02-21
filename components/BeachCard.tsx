@@ -8,10 +8,11 @@ interface BeachCardProps {
   state: BeachState;
   lang: Lang;
   selected: boolean;
+  distance?: number;
   onClick: () => void;
 }
 
-export function BeachCard({ state, lang, selected, onClick }: BeachCardProps) {
+export function BeachCard({ state, lang, selected, distance, onClick }: BeachCardProps) {
   const { beach, status, currentHeight, trend } = state;
   const trendLabel = t(lang, `trend.${trend}`);
 
@@ -35,7 +36,12 @@ export function BeachCard({ state, lang, selected, onClick }: BeachCardProps) {
               {beach.name}
             </h3>
           </div>
-          <p className="mt-0.5 text-xs" style={{ color: "var(--color-text-tertiary)" }}>{beach.nameTh}</p>
+          <p className="mt-0.5 text-xs" style={{ color: "var(--color-text-tertiary)" }}>
+            {beach.nameTh}
+            {distance != null && (
+              <span className="ml-2 tabular-nums">{distance < 1 ? `${Math.round(distance * 1000)}m` : `${distance.toFixed(1)}km`}</span>
+            )}
+          </p>
         </div>
         <StatusBadge status={status.status} labelKey={status.labelKey} lang={lang} />
       </div>

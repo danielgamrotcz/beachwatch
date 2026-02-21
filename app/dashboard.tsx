@@ -28,6 +28,7 @@ export function Dashboard({ initialStates }: DashboardProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [nearestId, setNearestId] = useState<string | null>(initialStates[0]?.beach.id ?? null);
   const [userPos, setUserPos] = useState<{ lat: number; lng: number } | null>(null);
+  const [distances, setDistances] = useState<Record<string, number>>({});
   const [lang, setLang] = useLang();
 
   useEffect(() => {
@@ -38,11 +39,14 @@ export function Dashboard({ initialStates }: DashboardProps) {
         setUserPos({ lat: latitude, lng: longitude });
         let closest = initialStates[0]?.beach.id ?? null;
         let minDist = Infinity;
+        const dists: Record<string, number> = {};
         for (const s of initialStates) {
           const d = haversine(latitude, longitude, s.beach.coordinates.lat, s.beach.coordinates.lng);
+          dists[s.beach.id] = d;
           if (d < minDist) { minDist = d; closest = s.beach.id; }
         }
         setNearestId(closest);
+        setDistances(dists);
       },
     );
   }, [initialStates]);
@@ -59,6 +63,11 @@ export function Dashboard({ initialStates }: DashboardProps) {
     }, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
+
+  const hasDistances = Object.keys(distances).length > 0;
+  const sortedStates = hasDistances
+    ? [...states].sort((a, b) => (distances[a.beach.id] ?? Infinity) - (distances[b.beach.id] ?? Infinity))
+    : states;
 
   const selected = states.find((s) => s.beach.id === selectedId) ?? null;
   const chartBeachId = selectedId ?? nearestId;
@@ -114,12 +123,13 @@ export function Dashboard({ initialStates }: DashboardProps) {
 
         <div className="flex flex-col gap-3 md:flex-row md:items-start">
           <div className="flex flex-col gap-3 flex-1 min-w-0">
-            {states.map((s) => (
+            {sortedStates.map((s) => (
               <BeachCard
                 key={s.beach.id}
                 state={s}
                 lang={lang}
                 selected={selectedId === s.beach.id}
+                distance={distances[s.beach.id]}
                 onClick={() => setSelectedId(selectedId === s.beach.id ? null : s.beach.id)}
               />
             ))}
@@ -128,7 +138,7 @@ export function Dashboard({ initialStates }: DashboardProps) {
           {/* Desktop: scrollable sticky sidebar */}
           {selected && (
             <div className="hidden md:block md:sticky md:top-20 md:w-96 md:shrink-0 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:rounded-2xl">
-              <BeachDetail state={selected} lang={lang} onClose={handleClose} />
+              <BeachDetail state={selected} lang={lang} distance={selected ? distances[selected.beach.id] : undefined} onClose={handleClose} />
             </div>
           )}
         </div>
@@ -146,7 +156,7 @@ export function Dashboard({ initialStates }: DashboardProps) {
                 <div className="h-1 w-10 rounded-full" style={{ background: "var(--color-text-tertiary)" }} />
               </div>
               <div className="px-4 pb-4">
-                <BeachDetail state={selected} lang={lang} onClose={handleClose} />
+                <BeachDetail state={selected} lang={lang} distance={selected ? distances[selected.beach.id] : undefined} onClose={handleClose} />
               </div>
             </div>
           </div>
