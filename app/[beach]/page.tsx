@@ -29,7 +29,7 @@ export async function generateMetadata({
 
   return {
     title: `${beach.name} — Beach Watch`,
-    description: beach.description.en,
+    description: `Real-time tide status for ${beach.name}, Hua Hin`,
     openGraph: {
       title: `${beach.name} — Beach Watch`,
       description: `Real-time tide status for ${beach.name}, Hua Hin`,

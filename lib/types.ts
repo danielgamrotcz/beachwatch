@@ -2,7 +2,7 @@ export interface Beach {
   id: string;
   name: string;
   nameTh: string;
-  description: { en: string; cs: string };
+  descriptionKey: string;
   coordinates: { lat: number; lng: number };
   properties: {
     beachWidthMax: number;
@@ -38,8 +38,8 @@ export type BeachStatusType = "open" | "narrow" | "flooded";
 export interface BeachStatus {
   walkable: boolean;
   status: BeachStatusType;
-  label: { en: string; cs: string };
-  sublabel: { en: string; cs: string };
+  labelKey: string;
+  sublabelKey: string;
   color: string;
   visibleWidth: number;
   widthPercent: number;
@@ -50,9 +50,17 @@ export type TideTrend = "rising" | "falling" | "high" | "low";
 export interface TideEvent {
   time: string;
   type: "high" | "low" | "status-change";
-  label: { en: string; cs: string };
+  labelKey: string;
   height?: number;
   newStatus?: BeachStatusType;
+}
+
+export interface ForecastWindow {
+  startHour: number;
+  endHour: number;
+  status: BeachStatusType;
+  minWidth: number;
+  maxWidth: number;
 }
 
 export interface BeachState {

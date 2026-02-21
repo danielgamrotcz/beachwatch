@@ -100,7 +100,7 @@ export default function OGImage() {
                   color: s.status.color,
                 }}
               >
-                {s.status.label.en}
+                {s.status.status === "open" ? "Open" : s.status.status === "narrow" ? "Passable" : "Flooded"}
               </span>
             </div>
           ))}

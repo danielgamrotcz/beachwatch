@@ -1,6 +1,6 @@
 "use client";
 
-import { Lang, setLanguage } from "@/lib/i18n";
+import { Lang, LANGUAGES, setLanguage } from "@/lib/i18n";
 
 interface LanguageToggleProps {
   lang: Lang;
@@ -8,22 +8,37 @@ interface LanguageToggleProps {
 }
 
 export function LanguageToggle({ lang, onChange }: LanguageToggleProps) {
-  function toggle() {
-    const next = lang === "cs" ? "en" : "cs";
-    setLanguage(next);
-    onChange(next);
-  }
+  const current = LANGUAGES.find((l) => l.code === lang) ?? LANGUAGES[0];
 
   return (
-    <button
-      onClick={toggle}
-      className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium transition-colors hover:bg-[var(--color-accent-light)]"
-      style={{ color: "var(--color-text-secondary)" }}
-      aria-label="Switch language"
-    >
-      <span className={lang === "cs" ? "opacity-100" : "opacity-40"}>CZ</span>
-      <span style={{ color: "var(--color-text-tertiary)" }}>/</span>
-      <span className={lang === "en" ? "opacity-100" : "opacity-40"}>EN</span>
-    </button>
+    <div className="relative">
+      <select
+        value={lang}
+        onChange={(e) => {
+          const next = e.target.value as Lang;
+          setLanguage(next);
+          onChange(next);
+        }}
+        className="appearance-none rounded-lg py-1 pl-2 pr-6 text-xs font-medium cursor-pointer"
+        style={{
+          color: "var(--color-text-secondary)",
+          background: "transparent",
+          border: "1px solid var(--color-border)",
+        }}
+        aria-label="Language"
+      >
+        {LANGUAGES.map((l) => (
+          <option key={l.code} value={l.code}>
+            {l.flag} {l.label}
+          </option>
+        ))}
+      </select>
+      <span
+        className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px]"
+        style={{ color: "var(--color-text-tertiary)" }}
+      >
+        {current.flag}
+      </span>
+    </div>
   );
 }
