@@ -27,6 +27,7 @@ export function Dashboard({ initialStates }: DashboardProps) {
   const [states, setStates] = useState(initialStates);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [nearestId, setNearestId] = useState<string | null>(initialStates[0]?.beach.id ?? null);
+  const [userPos, setUserPos] = useState<{ lat: number; lng: number } | null>(null);
   const [lang, setLang] = useLang();
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export function Dashboard({ initialStates }: DashboardProps) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
+        setUserPos({ lat: latitude, lng: longitude });
         let closest = initialStates[0]?.beach.id ?? null;
         let minDist = Infinity;
         for (const s of initialStates) {
@@ -102,6 +104,7 @@ export function Dashboard({ initialStates }: DashboardProps) {
             selectedId={selectedId}
             onSelect={(id) => setSelectedId(selectedId === id ? null : id)}
             lang={lang}
+            userPosition={userPos}
           />
         </div>
 

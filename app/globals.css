@@ -57,6 +57,17 @@ html, body {
   50% { transform: scale(1.6); opacity: 0; }
 }
 
+/* User location marker pulse on map */
+.user-marker-pulse {
+  animation: userPulse 2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes userPulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 0.5; }
+}
+
 /* Smooth scroll + iOS rubber band */
 html { scroll-behavior: smooth; }
 

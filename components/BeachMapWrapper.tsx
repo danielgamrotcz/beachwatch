@@ -17,6 +17,7 @@ interface BeachMapWrapperProps {
   selectedId: string | null;
   onSelect: (id: string) => void;
   lang: Lang;
+  userPosition?: { lat: number; lng: number } | null;
 }
 
 export function BeachMapWrapper(props: BeachMapWrapperProps) {

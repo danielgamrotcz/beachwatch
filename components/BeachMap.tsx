@@ -11,17 +11,19 @@ interface BeachMapProps {
   selectedId: string | null;
   onSelect: (id: string) => void;
   lang: Lang;
+  userPosition?: { lat: number; lng: number } | null;
 }
 
 const LIGHT_TILES = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
 const DARK_TILES = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
 const TILE_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>';
 
-export function BeachMap({ states, selectedId, onSelect, lang }: BeachMapProps) {
+export function BeachMap({ states, selectedId, onSelect, lang, userPosition }: BeachMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
   const markersRef = useRef<Map<string, L.CircleMarker>>(new Map());
+  const userMarkerRef = useRef<L.CircleMarker | null>(null);
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
 
@@ -108,6 +110,7 @@ export function BeachMap({ states, selectedId, onSelect, lang }: BeachMapProps) 
       }
       markers.clear();
       tileLayerRef.current = null;
+      userMarkerRef.current = null;
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -129,6 +132,38 @@ export function BeachMap({ states, selectedId, onSelect, lang }: BeachMapProps) 
       marker.setTooltipContent(`${s.beach.name} — ${statusText}`);
     }
   }, [states, selectedId, lang]);
+
+  // Add/update user position marker
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !userPosition) return;
+
+    import("leaflet").then((leaflet) => {
+      const Lf = leaflet.default ?? leaflet;
+
+      if (userMarkerRef.current) {
+        userMarkerRef.current.setLatLng([userPosition.lat, userPosition.lng]);
+      } else {
+        const marker = Lf.circleMarker([userPosition.lat, userPosition.lng], {
+          radius: 6,
+          fillColor: "#007AFF",
+          fillOpacity: 0.85,
+          color: "#ffffff",
+          weight: 2,
+          className: "user-marker-pulse",
+        }).addTo(map);
+        marker.bindTooltip("You are here", { direction: "top", offset: [0, -8] });
+        userMarkerRef.current = marker;
+      }
+
+      // Refit bounds to include user position
+      const bounds: L.LatLngExpression[] = [[userPosition.lat, userPosition.lng]];
+      for (const s of states) {
+        bounds.push([s.beach.coordinates.lat, s.beach.coordinates.lng]);
+      }
+      map.fitBounds(bounds as L.LatLngBoundsExpression, { padding: [30, 30] });
+    });
+  }, [userPosition, states]);
 
   return (
     <div
