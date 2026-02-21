@@ -27,5 +27,10 @@
 
   "vars": {
     "NEXT_PUBLIC_SITE_URL": "https://beachwatch.daniel-c41.workers.dev"
+  },
+
+  // Refresh tide data at 0:00, 6:00, 12:00, 18:00 ICT (UTC+7)
+  "triggers": {
+    "crons": ["0 17,23,5,11 * * *"]
   }
 }
