@@ -68,17 +68,18 @@ export function TideChart({ data, beach, lang, compact }: TideChartProps) {
     }
   }
 
-  // Time labels every 3h in ICT
+  // Time labels every 3h in ICT (span two days for data crossing midnight)
   const timeLabels: { x: number; label: string }[] = [];
   const dayStart = new Date(points[0].time);
   dayStart.setUTCHours(0 - 7, 0, 0, 0); // midnight ICT in UTC
 
-  for (let ictHour = 0; ictHour <= 24; ictHour += 3) {
-    const ms = dayStart.getTime() + ictHour * 3600000;
+  for (let offset = 0; offset <= 48; offset += 3) {
+    const ms = dayStart.getTime() + offset * 3600000;
     if (ms >= startTime && ms <= endTime) {
+      const displayHour = offset % 24;
       timeLabels.push({
         x: xScale(ms),
-        label: `${ictHour.toString().padStart(2, "0")}:00`,
+        label: `${displayHour.toString().padStart(2, "0")}:00`,
       });
     }
   }

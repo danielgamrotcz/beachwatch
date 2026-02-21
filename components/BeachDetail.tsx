@@ -54,11 +54,6 @@ export function BeachDetail({ state, lang, onClose }: BeachDetailProps) {
         <QuickStat label={t(lang, "beach.width")} value={status.visibleWidth > 0 ? `${status.visibleWidth}m / ${beach.properties.beachWidthMax}m` : "\u2014"} />
       </div>
 
-      {/* GPS coordinates */}
-      <div className="flex gap-4">
-        <QuickStat label="GPS" value={`${beach.coordinates.lat.toFixed(4)}, ${beach.coordinates.lng.toFixed(4)}`} />
-      </div>
-
       {/* Chart */}
       <TideChart data={tideData} beach={beach} lang={lang} compact />
 
