@@ -23,14 +23,34 @@ export const BEACHES: Beach[] = [
     googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=12.6722,99.9592",
   },
   {
+    id: "bor-fai",
+    name: "Bor Fai Beach",
+    nameTh: "หาดบ่อฝ้าย",
+    descriptionKey: "beach.bor-fai",
+    coordinates: { lat: 12.6100, lng: 99.9580 },
+    properties: { beachWidthMax: 50, criticalHeight: 1.7, narrowHeight: 1.3, surface: "sand", difficulty: "easy" },
+    icon: "❤️",
+    googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=12.6100,99.9580",
+  },
+  {
     id: "hua-hin-main",
     name: "Hua Hin Beach",
     nameTh: "หาดหัวหิน",
     descriptionKey: "beach.hua-hin-main",
-    coordinates: { lat: 12.5652, lng: 99.9595 },
+    coordinates: { lat: 12.5696, lng: 99.9626 },
     properties: { beachWidthMax: 45, criticalHeight: 1.7, narrowHeight: 1.3, surface: "sand", difficulty: "easy" },
     icon: "🏖️",
-    googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=12.5652,99.9595",
+    googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=12.5696,99.9626",
+  },
+  {
+    id: "chiva-som",
+    name: "Chiva Som Beach",
+    nameTh: "หาดชีวาศรม",
+    descriptionKey: "beach.chiva-som",
+    coordinates: { lat: 12.5395, lng: 99.9649 },
+    properties: { beachWidthMax: 30, criticalHeight: 1.6, narrowHeight: 1.2, surface: "sand", difficulty: "easy" },
+    icon: "🪷",
+    googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=12.5395,99.9649",
   },
   {
     id: "khao-takiab",
@@ -94,4 +114,4 @@ export const BEACHES: Beach[] = [
   },
 ];
 
-export const TIDE_REFERENCE_POINT = { lat: 12.5652, lng: 99.9595 };
+export const TIDE_REFERENCE_POINT = { lat: 12.5696, lng: 99.9626 };
